@@ -1,80 +1,158 @@
-//학과 : 인공지능공학부
-//학번 : 2414320
-//이름 : 최지은
-//프로그램 파일명 : [9] 카드 뒤집기 게임
-//프로그램 실제 작성일 : 2025/5/30
+// 학과 : 인공지능공학부
+// 학번 : 2414320
+// 이름 : 최지은
+// 프로그램 파일명 : [3]연결 리스트 정렬 검색 (정렬, 검색)
+// 프로그램 실제 작성일 : 2025/5/20
+
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-#define SIZE 5  // 큐 크기 정의
+#define TOTAL_NODES 31
+#define SEARCH_COUNT 10
 
-// 큐 자료형 정의
-typedef struct {
-    int data[SIZE];  // 데이터를 저장할 배열
-    int front;       // 가장 앞쪽 요소의 인덱스 (제거 대상)
-    int rear;        // 가장 마지막 요소의 인덱스 (추가 대상)
-} Queue;
+// 연결 리스트의 노드 구조체 정의
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
 
-// 큐 초기화 함수
-void initQueue(Queue* q) {
-    q->front = -1;
-    q->rear = -1;
+// 새 노드를 만드는 함수
+Node* createNode(int data) {
+    Node* newNode;
+    newNode = (Node*)malloc(sizeof(Node)); //node구조체만큼 메모리를 할당받고 노드를 가르키는 포인터로 형 변환.
+    newNode->data = data; 
+    newNode->next = NULL;
+    return newNode;
 }
 
+// 리스트 끝에 새 노드를 추가하는 함수 
+void appendNode(Node** head, int data) {
+    // 새 노드를 만들고 값 저장
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
 
-// 큐가 비었는지 확인
-int isEmpty(Queue* q) {
-    return q->front == q->rear;
-}
-
-// 큐가 가득 찼는지 확인
-int isFull(Queue* q) {
-    return q->rear == SIZE - 1;
-}
-
-// 큐에 요소를 추가하는 함수 (enqueue)
-void enqueue(Queue* q, int value) {
-    if (isFull(q)) {
-        printf("큐가 가득 찼습니다. 더 이상 추가할 수 없습니다.\n");
-        return;
+    // 리스트가 비어 있다면 새 노드를 head로 설정
+    if (*head == NULL) {
+        *head = newNode;
     }
-    q->rear++;
-    q->data[q->rear] = value;
-}
+    else {
+        // 리스트의 마지막 노드를 찾을 때까지 이동
+        Node* temp = *head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
 
-// 큐에서 요소를 제거하고 반환하는 함수 (dequeue)
-int dequeue(Queue* q) {
-    if (isEmpty(q)) {
-        printf("큐가 비어 있습니다. 제거할 수 없습니다.\n");
-        return -1;
+        // 마지막 노드의 next가 새 노드를 가리키게 함
+        temp->next = newNode;
     }
-    q->front++;
-    return q->data[q->front];
 }
 
+// 선택 정렬 (Selection Sort) 알고리즘 구현
+void selectionSort(Node* head) {
+    Node* current = head;
 
+    while (current != NULL) {
+        Node* minNode = current;
+        Node* nextNode = current->next;
 
+        while (nextNode != NULL) {
+            if (nextNode->data < minNode->data) {
+                minNode = nextNode;
+            }
+            nextNode = nextNode->next;
+        }
+
+        // 값 교환
+        int temp = current->data;
+        current->data = minNode->data;
+        minNode->data = temp;
+
+        current = current->next;
+    }
+}
+
+// 연결 리스트를 배열로 바꾸는 함수 (이진 탐색을 위해)
+void listToArray(Node* head, int arr[], int* size) {
+    int index = 0;
+    while (head != NULL) {
+        arr[index++] = head->data;
+        head = head->next;
+    }
+    *size = index;
+}
+
+// 배열에서 이진 탐색 수행
+int binarySearch(int arr[], int size, int key) {
+    int left = 0;
+    int right = size - 1;
+    int mid;
+
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (arr[mid] == key)
+            return mid;  // 찾았을 때 배열 인덱스 반환
+        else if (arr[mid] < key)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;  // 못 찾았을 때
+}
+
+// 연결 리스트 전체 출력
+void printList(Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
 
 // 메인 함수
 int main() {
-    Queue q;
-    initQueue(&q);  // 큐 초기화
+    int inputData[TOTAL_NODES] = {
+        66, 2, 67, 69, 8, 11, 43, 49, 5, 6,
+        70, 71, 73, 75, 48, 12, 14, 7, 15, 24,
+        26, 42, 51, 55, 56, 59, 1, 3, 80, 96, 99
+    };
 
-    int cards[SIZE] = { 3, 7, 2, 9, 5 };  // 카드 번호 입력 (고정된 5장)
+    int searchKeys[SEARCH_COUNT] = { 3, 97, 96, 111, 15, 9, 66, 120, 99, 59 };
 
-    // 카드를 큐에 저장 (enqueue)
-    for (int i = 0; i < SIZE; i++) {
-        enqueue(&q, cards[i]);
+    Node* head = NULL;
+
+    // 1. 연결 리스트 생성
+    for (int i = 0; i < TOTAL_NODES; i++) {
+        appendNode(&head, inputData[i]);
     }
 
-    // 큐에서 카드를 하나씩 꺼내며 출력 (dequeue)
-    printf("카드 공개 순서: ");
-    for (int i = 0; i < SIZE; i++) {
-        int card = dequeue(&q);  // 앞에서부터 하나씩 꺼냄
-        printf("%d ", card);
+    // 2. 선택 정렬 수행
+    selectionSort(head);
+
+    // 3. 정렬된 리스트 출력
+    printf("정렬된 리스트:\n");
+    printList(head);
+
+    // 4. 리스트를 배열로 변환
+    int sortedArr[TOTAL_NODES];
+    int size = 0;
+    listToArray(head, sortedArr, &size);
+
+    // 5. 이진 탐색 실행 및 출력
+    printf("\n검색 결과:\n");
+    for (int i = 0; i < SEARCH_COUNT; i++) {
+        int key = searchKeys[i];
+        int index = binarySearch(sortedArr, size, key);
+        printf("(%d) %d → ", i + 1, key);
+        if (index != -1) {
+            printf("True, 위치: %d번째 노드\n", index + 1);  // 1번부터 시작
+        }
+        else {
+            printf("False, No Result in List\n");
+        }
     }
 
-    printf("\n");
     return 0;
 }
- 
