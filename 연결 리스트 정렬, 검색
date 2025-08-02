@@ -1,8 +1,8 @@
-// ÇĞ°ú : ÀÎ°øÁö´É°øÇĞºÎ
-// ÇĞ¹ø : 2414320
-// ÀÌ¸§ : ÃÖÁöÀº
-// ÇÁ·Î±×·¥ ÆÄÀÏ¸í : [3]¿¬°á ¸®½ºÆ® Á¤·Ä °Ë»ö (Á¤·Ä, °Ë»ö)
-// ÇÁ·Î±×·¥ ½ÇÁ¦ ÀÛ¼ºÀÏ : 2025/5/20
+// í•™ê³¼ : ì¸ê³µì§€ëŠ¥ê³µí•™ë¶€
+// í•™ë²ˆ : 2414320
+// ì´ë¦„ : ìµœì§€ì€
+// í”„ë¡œê·¸ë¨ íŒŒì¼ëª… : [3]ì—°ê²° ë¦¬ìŠ¤íŠ¸ ì •ë ¬ ê²€ìƒ‰ (ì •ë ¬, ê²€ìƒ‰)
+// í”„ë¡œê·¸ë¨ ì‹¤ì œ ì‘ì„±ì¼ : 2025/5/20
 
 
 #include <stdio.h>
@@ -12,45 +12,45 @@
 #define TOTAL_NODES 31
 #define SEARCH_COUNT 10
 
-// ¿¬°á ¸®½ºÆ®ÀÇ ³ëµå ±¸Á¶Ã¼ Á¤ÀÇ
+// ì—°ê²° ë¦¬ìŠ¤íŠ¸ì˜ ë…¸ë“œ êµ¬ì¡°ì²´ ì •ì˜
 typedef struct Node {
     int data;
     struct Node* next;
 } Node;
 
-// »õ ³ëµå¸¦ ¸¸µå´Â ÇÔ¼ö
+// ìƒˆ ë…¸ë“œë¥¼ ë§Œë“œëŠ” í•¨ìˆ˜
 Node* createNode(int data) {
     Node* newNode;
-    newNode = (Node*)malloc(sizeof(Node)); //node±¸Á¶Ã¼¸¸Å­ ¸Ş¸ğ¸®¸¦ ÇÒ´ç¹Ş°í ³ëµå¸¦ °¡¸£Å°´Â Æ÷ÀÎÅÍ·Î Çü º¯È¯.
+    newNode = (Node*)malloc(sizeof(Node)); //nodeêµ¬ì¡°ì²´ë§Œí¼ ë©”ëª¨ë¦¬ë¥¼ í• ë‹¹ë°›ê³  ë…¸ë“œë¥¼ ê°€ë¥´í‚¤ëŠ” í¬ì¸í„°ë¡œ í˜• ë³€í™˜.
     newNode->data = data; 
     newNode->next = NULL;
     return newNode;
 }
 
-// ¸®½ºÆ® ³¡¿¡ »õ ³ëµå¸¦ Ãß°¡ÇÏ´Â ÇÔ¼ö 
+// ë¦¬ìŠ¤íŠ¸ ëì— ìƒˆ ë…¸ë“œë¥¼ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜ 
 void appendNode(Node** head, int data) {
-    // »õ ³ëµå¸¦ ¸¸µé°í °ª ÀúÀå
+    // ìƒˆ ë…¸ë“œë¥¼ ë§Œë“¤ê³  ê°’ ì €ì¥
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
     newNode->next = NULL;
 
-    // ¸®½ºÆ®°¡ ºñ¾î ÀÖ´Ù¸é »õ ³ëµå¸¦ head·Î ¼³Á¤
+    // ë¦¬ìŠ¤íŠ¸ê°€ ë¹„ì–´ ìˆë‹¤ë©´ ìƒˆ ë…¸ë“œë¥¼ headë¡œ ì„¤ì •
     if (*head == NULL) {
         *head = newNode;
     }
     else {
-        // ¸®½ºÆ®ÀÇ ¸¶Áö¸· ³ëµå¸¦ Ã£À» ¶§±îÁö ÀÌµ¿
+        // ë¦¬ìŠ¤íŠ¸ì˜ ë§ˆì§€ë§‰ ë…¸ë“œë¥¼ ì°¾ì„ ë•Œê¹Œì§€ ì´ë™
         Node* temp = *head;
         while (temp->next != NULL) {
             temp = temp->next;
         }
 
-        // ¸¶Áö¸· ³ëµåÀÇ next°¡ »õ ³ëµå¸¦ °¡¸®Å°°Ô ÇÔ
+        // ë§ˆì§€ë§‰ ë…¸ë“œì˜ nextê°€ ìƒˆ ë…¸ë“œë¥¼ ê°€ë¦¬í‚¤ê²Œ í•¨
         temp->next = newNode;
     }
 }
 
-// ¼±ÅÃ Á¤·Ä (Selection Sort) ¾Ë°í¸®Áò ±¸Çö
+// ì„ íƒ ì •ë ¬ (Selection Sort) ì•Œê³ ë¦¬ì¦˜ êµ¬í˜„
 void selectionSort(Node* head) {
     Node* current = head;
 
@@ -65,7 +65,7 @@ void selectionSort(Node* head) {
             nextNode = nextNode->next;
         }
 
-        // °ª ±³È¯
+        // ê°’ êµí™˜
         int temp = current->data;
         current->data = minNode->data;
         minNode->data = temp;
@@ -74,7 +74,7 @@ void selectionSort(Node* head) {
     }
 }
 
-// ¿¬°á ¸®½ºÆ®¸¦ ¹è¿­·Î ¹Ù²Ù´Â ÇÔ¼ö (ÀÌÁø Å½»öÀ» À§ÇØ)
+// ì—°ê²° ë¦¬ìŠ¤íŠ¸ë¥¼ ë°°ì—´ë¡œ ë°”ê¾¸ëŠ” í•¨ìˆ˜ (ì´ì§„ íƒìƒ‰ì„ ìœ„í•´)
 void listToArray(Node* head, int arr[], int* size) {
     int index = 0;
     while (head != NULL) {
@@ -84,7 +84,7 @@ void listToArray(Node* head, int arr[], int* size) {
     *size = index;
 }
 
-// ¹è¿­¿¡¼­ ÀÌÁø Å½»ö ¼öÇà
+// ë°°ì—´ì—ì„œ ì´ì§„ íƒìƒ‰ ìˆ˜í–‰
 int binarySearch(int arr[], int size, int key) {
     int left = 0;
     int right = size - 1;
@@ -93,16 +93,16 @@ int binarySearch(int arr[], int size, int key) {
     while (left <= right) {
         mid = (left + right) / 2;
         if (arr[mid] == key)
-            return mid;  // Ã£¾ÒÀ» ¶§ ¹è¿­ ÀÎµ¦½º ¹İÈ¯
+            return mid;  // ì°¾ì•˜ì„ ë•Œ ë°°ì—´ ì¸ë±ìŠ¤ ë°˜í™˜
         else if (arr[mid] < key)
             left = mid + 1;
         else
             right = mid - 1;
     }
-    return -1;  // ¸ø Ã£¾ÒÀ» ¶§
+    return -1;  // ëª» ì°¾ì•˜ì„ ë•Œ
 }
 
-// ¿¬°á ¸®½ºÆ® ÀüÃ¼ Ãâ·Â
+// ì—°ê²° ë¦¬ìŠ¤íŠ¸ ì „ì²´ ì¶œë ¥
 void printList(Node* head) {
     while (head != NULL) {
         printf("%d ", head->data);
@@ -111,7 +111,7 @@ void printList(Node* head) {
     printf("\n");
 }
 
-// ¸ŞÀÎ ÇÔ¼ö
+// ë©”ì¸ í•¨ìˆ˜
 int main() {
     int inputData[TOTAL_NODES] = {
         66, 2, 67, 69, 8, 11, 43, 49, 5, 6,
@@ -123,31 +123,31 @@ int main() {
 
     Node* head = NULL;
 
-    // 1. ¿¬°á ¸®½ºÆ® »ı¼º
+    // 1. ì—°ê²° ë¦¬ìŠ¤íŠ¸ ìƒì„±
     for (int i = 0; i < TOTAL_NODES; i++) {
         appendNode(&head, inputData[i]);
     }
 
-    // 2. ¼±ÅÃ Á¤·Ä ¼öÇà
+    // 2. ì„ íƒ ì •ë ¬ ìˆ˜í–‰
     selectionSort(head);
 
-    // 3. Á¤·ÄµÈ ¸®½ºÆ® Ãâ·Â
-    printf("Á¤·ÄµÈ ¸®½ºÆ®:\n");
+    // 3. ì •ë ¬ëœ ë¦¬ìŠ¤íŠ¸ ì¶œë ¥
+    printf("ì •ë ¬ëœ ë¦¬ìŠ¤íŠ¸:\n");
     printList(head);
 
-    // 4. ¸®½ºÆ®¸¦ ¹è¿­·Î º¯È¯
+    // 4. ë¦¬ìŠ¤íŠ¸ë¥¼ ë°°ì—´ë¡œ ë³€í™˜
     int sortedArr[TOTAL_NODES];
     int size = 0;
     listToArray(head, sortedArr, &size);
 
-    // 5. ÀÌÁø Å½»ö ½ÇÇà ¹× Ãâ·Â
-    printf("\n°Ë»ö °á°ú:\n");
+    // 5. ì´ì§„ íƒìƒ‰ ì‹¤í–‰ ë° ì¶œë ¥
+    printf("\nê²€ìƒ‰ ê²°ê³¼:\n");
     for (int i = 0; i < SEARCH_COUNT; i++) {
         int key = searchKeys[i];
         int index = binarySearch(sortedArr, size, key);
-        printf("(%d) %d ¡æ ", i + 1, key);
+        printf("(%d) %d â†’ ", i + 1, key);
         if (index != -1) {
-            printf("True, À§Ä¡: %d¹øÂ° ³ëµå\n", index + 1);  // 1¹øºÎÅÍ ½ÃÀÛ
+            printf("True, ìœ„ì¹˜: %dë²ˆì§¸ ë…¸ë“œ\n", index + 1);  // 1ë²ˆë¶€í„° ì‹œì‘
         }
         else {
             printf("False, No Result in List\n");
