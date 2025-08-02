@@ -1,0 +1,158 @@
+// 학과 : 인공지능공학부
+// 학번 : 2414320
+// 이름 : 최지은
+// 프로그램 파일명 : [3]연결 리스트 정렬 검색 (정렬, 검색)
+// 프로그램 실제 작성일 : 2025/5/20
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define TOTAL_NODES 31
+#define SEARCH_COUNT 10
+
+// 연결 리스트의 노드 구조체 정의
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// 새 노드를 만드는 함수
+Node* createNode(int data) {
+    Node* newNode;
+    newNode = (Node*)malloc(sizeof(Node)); //node구조체만큼 메모리를 할당받고 노드를 가르키는 포인터로 형 변환.
+    newNode->data = data; 
+    newNode->next = NULL;
+    return newNode;
+}
+
+// 리스트 끝에 새 노드를 추가하는 함수 
+void appendNode(Node** head, int data) {
+    // 새 노드를 만들고 값 저장
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+
+    // 리스트가 비어 있다면 새 노드를 head로 설정
+    if (*head == NULL) {
+        *head = newNode;
+    }
+    else {
+        // 리스트의 마지막 노드를 찾을 때까지 이동
+        Node* temp = *head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+
+        // 마지막 노드의 next가 새 노드를 가리키게 함
+        temp->next = newNode;
+    }
+}
+
+// 선택 정렬 (Selection Sort) 알고리즘 구현
+void selectionSort(Node* head) {
+    Node* current = head;
+
+    while (current != NULL) {
+        Node* minNode = current;
+        Node* nextNode = current->next;
+
+        while (nextNode != NULL) {
+            if (nextNode->data < minNode->data) {
+                minNode = nextNode;
+            }
+            nextNode = nextNode->next;
+        }
+
+        // 값 교환
+        int temp = current->data;
+        current->data = minNode->data;
+        minNode->data = temp;
+
+        current = current->next;
+    }
+}
+
+// 연결 리스트를 배열로 바꾸는 함수 (이진 탐색을 위해)
+void listToArray(Node* head, int arr[], int* size) {
+    int index = 0;
+    while (head != NULL) {
+        arr[index++] = head->data;
+        head = head->next;
+    }
+    *size = index;
+}
+
+// 배열에서 이진 탐색 수행
+int binarySearch(int arr[], int size, int key) {
+    int left = 0;
+    int right = size - 1;
+    int mid;
+
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (arr[mid] == key)
+            return mid;  // 찾았을 때 배열 인덱스 반환
+        else if (arr[mid] < key)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+    return -1;  // 못 찾았을 때
+}
+
+// 연결 리스트 전체 출력
+void printList(Node* head) {
+    while (head != NULL) {
+        printf("%d ", head->data);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// 메인 함수
+int main() {
+    int inputData[TOTAL_NODES] = {
+        66, 2, 67, 69, 8, 11, 43, 49, 5, 6,
+        70, 71, 73, 75, 48, 12, 14, 7, 15, 24,
+        26, 42, 51, 55, 56, 59, 1, 3, 80, 96, 99
+    };
+
+    int searchKeys[SEARCH_COUNT] = { 3, 97, 96, 111, 15, 9, 66, 120, 99, 59 };
+
+    Node* head = NULL;
+
+    // 1. 연결 리스트 생성
+    for (int i = 0; i < TOTAL_NODES; i++) {
+        appendNode(&head, inputData[i]);
+    }
+
+    // 2. 선택 정렬 수행
+    selectionSort(head);
+
+    // 3. 정렬된 리스트 출력
+    printf("정렬된 리스트:\n");
+    printList(head);
+
+    // 4. 리스트를 배열로 변환
+    int sortedArr[TOTAL_NODES];
+    int size = 0;
+    listToArray(head, sortedArr, &size);
+
+    // 5. 이진 탐색 실행 및 출력
+    printf("\n검색 결과:\n");
+    for (int i = 0; i < SEARCH_COUNT; i++) {
+        int key = searchKeys[i];
+        int index = binarySearch(sortedArr, size, key);
+        printf("(%d) %d → ", i + 1, key);
+        if (index != -1) {
+            printf("True, 위치: %d번째 노드\n", index + 1);  // 1번부터 시작
+        }
+        else {
+            printf("False, No Result in List\n");
+        }
+    }
+
+    return 0;
+}
